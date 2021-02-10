@@ -1,0 +1,117 @@
+﻿@model NPBank.Model.PersonModel
+@{ 
+
+    ViewBag.Title = "Person Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="container">
+    <div id="kgPerson"></div>
+</div>
+
+<script>
+    $(function (e) {
+        var gridDataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Content("~/Home/GetPersonInformation")',
+                    dataType: "JSON",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                },
+                parameterMap: function (data, operations) {
+                    var returnData = JSON.stringify(data);
+                    return returnData
+                },
+            },
+            schema: {
+                total: function (data) {
+                    return data[1]
+                },
+                data: function (data) {
+                    return data[0]
+                },
+                model: {
+                    id: "PersonId",
+                    fields: {
+                        PersonId: { type: "integer" },
+                        PhoneNo: { type: "string" },
+                        FullName: { type: "string" },
+                        DateOfBirth: { type: "date" },
+                        Email: { type: "string" },
+                        Address: { type: "string" },
+                        Gender: { type: "string" }
+
+                    }
+                }
+            },
+            batch: true,
+            pageSize: 10,
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+        });
+        $("#kgPerson").kendoGrid({
+            pageable: {
+                refresh: true,
+                pageSizes: 10,
+                buttonCount: 5
+            },
+            dataSource: gridDataSource,
+            sortable: true,
+            selectable: "single row",
+            columns: [
+                {
+                    field: "FullName", title: 'Name', width: 25
+                },
+                {
+                    field: "Address", title: 'Address', width: 25
+                },
+                {
+                    field: "DateOfBirth", title: 'Date of Birth', width: 20, format: "{0: yyyy-MM-dd}",
+                },
+                {
+                    field: "Email", title: 'Email', width: 25
+                },
+                {
+                    field: "PhoneNo", title: 'Phone', width: 20
+                },
+                {
+                    field: "Gender", title: 'Gender', width: 15
+                },
+                {
+                    field: "Action", title: 'Action', width: 30,
+                    template: "<button type='button' class='btn btn-success btn-sm k-button' onclick='editRecord(#=PersonId#)'><i class='ti-close'></i> Edit</button>" +
+                        "<button type='button' class='btn btn-danger btn-sm k-button' onclick='deleteRecord(#=PersonId#)'><i class='ti-close'></i> Delete </button>"
+                }
+
+            ]
+
+        });
+
+    });
+    function editRecord(personId) {
+        $.ajax({
+            url: '@Url.Content("~/Home/AddEditPerson")',
+            data: { PersonId: personId },
+            type: 'GET',
+            success: function (node) {
+                $('#container').html(node);
+            }
+        });
+    }
+     function deleteRecord(personId) {
+        $.ajax({
+            url: '@Url.Content("~/Home/DeleteRecord")',
+            data: { personId: personId },
+            type: 'GET',
+            success: function (node) {
+                if (node.IsSuccess)
+                    alert('success')
+                else {
+                    alert ('failed')
+                }
+            }
+        });
+    }
+</script>
+

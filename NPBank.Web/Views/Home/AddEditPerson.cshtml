@@ -1,0 +1,384 @@
+﻿@model NPBank.Model.PersonModel
+@{
+    ViewBag.Title = "AddEditPerson";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    var personId = ViewBag.PersonId;
+}
+
+@Html.HiddenFor(m => m.PersonId)
+<form id="personForm" role="form">
+    <div class="row" style="border-bottom: 1.5px solid #cccccc">
+        <div class="col-md-3">
+            <h5 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-weight:600">
+                Personal Informations
+            </h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>First Name</label>
+                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FirstName)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    <label>Middle Name </label>
+                    @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    <label>Last Name </label>
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label> Date Of Birth</label>
+                @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DateOfBirth)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label> Gender</label>
+                @Html.TextBoxFor(model => model.GenderListItemId, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GenderListItemId)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Address</label>
+                @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Email</label>
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Phone Number</label>
+                @Html.TextBoxFor(model => model.PhoneNo, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <div>
+                    <label>Mobile Number</label>
+                    @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MobileNo)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="border-bottom: 1.5px solid #cccccc">
+        <div class="col-md-3">
+            <h5 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-weight:600">
+                Education Informations
+            </h5>
+        </div>
+    </div>
+    <div id="kgEducation"></div>
+    <div class="row" style="border-bottom: 1.5px solid #cccccc">
+        <div class="col-md-3">
+            <h5 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-weight:600">
+                Training Informations
+            </h5>
+        </div>
+    </div>
+    <div id="kgTraining"></div>
+    <div class="row">
+        <button  class="btn btn-success" id="btnSavePerson"> Save </button>
+    </div>
+</form>
+<script>
+    var EducationLevels = [];
+    $(function () {
+
+        $("#DateOfBirth").kendoDatePicker();
+        getEducationLevel();
+        $("#GenderListItemId").kendoDropDownList({
+            dataValueField: "ListItemId",
+            dataTextField: "ListItemDisplayName",
+            optionLabel: ' ',
+            popup: {
+                appendTo: $("#GenderListItemId").closest('.form-group')
+            },
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "@Url.Content("~/Home/GetListItem")",
+                        data: { categoryName: 'Gender' },
+                        contentType: 'application/json',
+                        type: 'GET'
+                    }
+                }
+            }
+        });
+        var dropdownlist = $("#GenderListItemId").data("kendoDropDownList");
+        dropdownlist.value($("#GenderListItemId").val());
+
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Content("~/Home/GetAcademicRecord")',
+                    dataType: "JSON",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: { personId: @Model.PersonId != '' ? @Model.PersonId :0}
+                },
+                parameterMap: function (data, operations) {
+                    var returnData = JSON.stringify(data);
+                    return returnData
+                },
+            },
+            batch: true,
+            schema: {
+                data: function (data) {
+                    return data[0]
+                },
+                model: {
+                    id: "AcademicRecordId",
+                    fields: {
+                        EducationLevelListItemId: {
+                            type: "number", field: "EducationLevelListItemId", validation: { required: false }
+                        },
+                        GPAObtained: { type: "number" },
+                        CompletionYear: { type: "date" },
+                        InstituteName: { type: "string" },
+                        Major: { type: "string" },
+                        Board: { type: "string" }
+                    }
+                },
+            },
+        });
+        var gridEdu = $("#kgEducation").kendoGrid({
+            dataSource: dataSource,
+            editable: "inline",
+            refresh: true,
+            scrollable: true,
+            toolbar:
+                [
+                    { name: "create", text: "Add Record" },
+                    {
+                        template: "<button type='button' class='btn btn-dan k-button' onclick='deleteRecord()'><i class='ti-close'></i> Delete Record</button>"
+                    },
+                ]
+            ,
+            columns: [
+                { template: "<div class='custom-check mar-0'><input type='checkbox' class='checkbox' /><label for='chk_'>&nbsp;</label></div>", title: "Select", width: 10 },
+                { field: "AcademicRecordId", hidden: true },
+                {
+                    field: "EducationLevelListItemId", title: "Level", editor: EducationDropDownEditor, width: 20,
+                    template: "#=EducationLevel(EducationLevelListItemId)#"
+                },
+                { field: "InstituteName", title: "Institute Name", width: 30 },
+                { field: "Major", title: "Major", width: 30 },
+                { field: "Board", title: "Board", width: 30 },
+                { field: "GPAObtained", title: "GPA Obtained", attributes: { "class": "numeric text-right" }, format: "{0:n2}", width: 15 },
+                {
+                    field: "CompletionYear", title: "Completion Year", width: 20,
+                    format: "{0: yyyy-MM-dd}",
+                    editor: function (container, options) {
+                        var input = $("<input/>");
+                        input.attr("name", options.field);
+                        input.appendTo(container);
+                        input.kendoDatePicker({});
+                    },
+                },
+            ],
+            editable: true,
+            selectable: "single"
+        }).data("kendoGrid");
+        var trainingDataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Content("~/Home/GetTrainingRecord")',
+                    dataType: "JSON",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: { personId: @Model.PersonId != '' ? @Model.PersonId :0}
+                },
+                parameterMap: function (data, operations) {
+                    var returnData = JSON.stringify(data);
+                    return returnData
+                },
+            },
+            batch: true,
+            schema: {
+                data: function (data) {
+                    return data[0]
+                },
+                model: {
+                    id: "TrainingId",
+                    fields: {
+                        StartDate: { type: "date" },
+                        EndDate: { type: "date" },
+                        InstituteName: { type: "string" },
+                        Course: { type: "string" },
+                        Location: { type: "string" }
+                    }
+                },
+            },
+        });
+        var gridTra = $("#kgTraining").kendoGrid({
+            dataSource: trainingDataSource,
+            editable: "inline",
+            refresh: true,
+            scrollable: true,
+            toolbar:
+                [
+                    { name: "create", text: "Add Record" },
+                    
+                ]
+            ,
+            columns: [
+                { template: "<div class='custom-check mar-0'><input type='checkbox' class='checkbox' /><label for='chk_'>&nbsp;</label></div>", title: "Select", width: 10 },
+                { field: "TrainingId", hidden: true },
+                {
+                    field: "InstituteName", title: "Institute Name", width: 30
+                },
+                { field: "Course", title: "Course", width: 30 },
+                { field: "Location", title: "Location", width: 30 },
+                {
+                    field: "StartDate", title: "Start Date", width: 20,
+                    format: "{0: yyyy-MM-dd}",
+                    editor: function (container, options) {
+                        var input = $("<input/>");
+                        input.attr("name", options.field);
+                        input.appendTo(container);
+                        input.kendoDatePicker({});
+                    },
+                },
+                {
+                    field: "EndDate", title: "End Date", width: 20,
+                    format: "{0: yyyy-MM-dd}",
+                    editor: function (container, options) {
+                        var input = $("<input/>");
+                        input.attr("name", options.field);
+                        input.appendTo(container);
+                        input.kendoDatePicker({});
+                    },
+                },                
+            ],
+            editable: true,
+            selectable: "single"
+        }).data("kendoGrid");
+
+        function EducationDropDownEditor(container, options) {
+            $('<input required data-text-field="Text" data-value-field="Value" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataSource: EducationLevels
+                });
+
+        }
+
+        function getEducationLevel(educationLevelListItemId) {
+            EducationLevels.length = 0;
+            $.ajax({
+                async: false,
+                url: "@Url.Content("~/Home/GetListItem")",
+                data: { categoryName: 'EducationLevel' },
+                success: function (result) {
+                    $.each(result, function (i, val) {
+                        EducationLevels.push({
+                            Value: val.ListItemId,
+                            Text: val.ListItemDisplayName
+                        })
+                    })
+                },
+                error: function (result) {
+                }
+            })
+        }
+
+
+        $('#btnSavePerson').on("click", function () {
+            var model = {};
+            model = {
+                PersonId: $("#PersonId").val(),
+                FirstName: $("#FirstName").val(),
+                MiddleName: $("#MiddleName").val(),
+                LastName: $("#LastName").val(),
+                GenderListItemId: parseInt($("#GenderListItemId").val()),
+                DateOfBirth: $("#DateOfBirth").val(),
+                Address: $("#Address").val(),
+                PhoneNo: $("#PhoneNo").val(),
+                MobileNo: $("#MobileNo").val(),
+                Email: $("#Email").val(),
+                Education: GetEducation(),
+                Training: GetTraining(),
+            };
+            
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/Home/SavePersonInformation")',
+                data: JSON.stringify(model),
+                datatype: 'json',
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    if (data.IsSuccess)
+                        alert('success')
+                    else {
+                        alert('failed')
+                    }
+                }
+            });
+        });
+
+    });
+    function EducationLevel(EducationLevelListItemId) {
+        if (EducationLevelListItemId == undefined || EducationLevelListItemId.ListItemId == 0 || EducationLevelListItemId == null) {
+            return "";
+        }
+        else {
+            for (var i = 0; i < EducationLevels.length; i++) {
+                if (EducationLevelListItemId > 0) {
+                    if (EducationLevels[i].Value == EducationLevelListItemId) {
+                        return EducationLevels[i].Text;
+                    }
+                }
+            }
+
+        }
+        return "";
+    }
+    function GetEducation() {
+        var dataSource = $("#kgEducation").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var data = query.filter(filters).data;
+        return data;
+    }
+    function GetTraining() {
+        var dataSource = $("#kgTraining").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var data = query.filter(filters).data;
+        return data;
+    }
+    function deleteRecord(trainingId) {
+    
+}
+</script>
+

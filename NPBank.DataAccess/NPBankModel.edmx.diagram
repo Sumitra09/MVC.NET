@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="60ca3ab3a8a94054883d033ca784073e" Name="Diagram1">
+        <EntityTypeShape EntityType="NPBankModel.AcademicRecord" Width="1.5" PointX="3" PointY="4.875" />
+        <EntityTypeShape EntityType="NPBankModel.ListItem" Width="1.5" PointX="8" PointY="0.875" />
+        <EntityTypeShape EntityType="NPBankModel.ListItemCategory" Width="1.5" PointX="5.75" PointY="1.125" />
+        <EntityTypeShape EntityType="NPBankModel.Person" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="NPBankModel.Training" Width="1.5" PointX="3" PointY="1.125" />
+        <AssociationConnector Association="NPBankModel.FK__AcademicR__Perso__4316F928" />
+        <AssociationConnector Association="NPBankModel.FK__ListItem__ListIt__286302EC" />
+        <AssociationConnector Association="NPBankModel.FK__Training__Person__46E78A0C" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

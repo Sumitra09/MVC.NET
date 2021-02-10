@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="NPBankModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AcademicRecord">
+          <Key>
+            <PropertyRef Name="AcademicRecordId" />
+          </Key>
+          <Property Name="AcademicRecordId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PersonId" Type="int" Nullable="false" />
+          <Property Name="EducationLevelListItemId" Type="int" Nullable="false" />
+          <Property Name="InstituteName" Type="nvarchar" MaxLength="500" />
+          <Property Name="GPAObtained" Type="float" />
+          <Property Name="CompletionYear" Type="datetime" />
+          <Property Name="Major" Type="nvarchar" MaxLength="250" />
+          <Property Name="Board" Type="nvarchar" MaxLength="250" />
+          <Property Name="InsertedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ListItem">
+          <Key>
+            <PropertyRef Name="ListItemId" />
+          </Key>
+          <Property Name="ListItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ListItemCategoryId" Type="int" Nullable="false" />
+          <Property Name="ListItemName" Type="nvarchar" MaxLength="250" />
+          <Property Name="ListItemDisplayName" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="ListItemCategory">
+          <Key>
+            <PropertyRef Name="ListItemCategoryId" />
+          </Key>
+          <Property Name="ListItemCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="PersonId" />
+          </Key>
+          <Property Name="PersonId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="25" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="25" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="25" />
+          <Property Name="DateOfBirth" Type="datetime" />
+          <Property Name="GenderListItemId" Type="int" />
+          <Property Name="Email" Type="nvarchar" MaxLength="250" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="250" />
+          <Property Name="InsertedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Training">
+          <Key>
+            <PropertyRef Name="TrainingId" />
+          </Key>
+          <Property Name="TrainingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PersonId" Type="int" Nullable="false" />
+          <Property Name="InstituteName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Course" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="InsertedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <Association Name="FK__AcademicR__Perso__4316F928">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="AcademicRecord" Type="Self.AcademicRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="AcademicRecord">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ListItem__ListIt__286302EC">
+          <End Role="ListItemCategory" Type="Self.ListItemCategory" Multiplicity="1" />
+          <End Role="ListItem" Type="Self.ListItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ListItemCategory">
+              <PropertyRef Name="ListItemCategoryId" />
+            </Principal>
+            <Dependent Role="ListItem">
+              <PropertyRef Name="ListItemCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Training__Person__46E78A0C">
+          <End Role="Person" Type="Self.Person" Multiplicity="1" />
+          <End Role="Training" Type="Self.Training" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="Training">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NPBankModelStoreContainer">
+          <EntitySet Name="AcademicRecord" EntityType="Self.AcademicRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ListItem" EntityType="Self.ListItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ListItemCategory" EntityType="Self.ListItemCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Person" EntityType="Self.Person" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Training" EntityType="Self.Training" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__AcademicR__Perso__4316F928" Association="Self.FK__AcademicR__Perso__4316F928">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="AcademicRecord" EntitySet="AcademicRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ListItem__ListIt__286302EC" Association="Self.FK__ListItem__ListIt__286302EC">
+            <End Role="ListItemCategory" EntitySet="ListItemCategory" />
+            <End Role="ListItem" EntitySet="ListItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Training__Person__46E78A0C" Association="Self.FK__Training__Person__46E78A0C">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="Training" EntitySet="Training" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NPBankModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="NPBankEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AcademicRecords" EntityType="NPBankModel.AcademicRecord" />
+          <EntitySet Name="ListItems" EntityType="NPBankModel.ListItem" />
+          <EntitySet Name="ListItemCategories" EntityType="NPBankModel.ListItemCategory" />
+          <EntitySet Name="People" EntityType="NPBankModel.Person" />
+          <EntitySet Name="Trainings" EntityType="NPBankModel.Training" />
+          <AssociationSet Name="FK__AcademicR__Perso__4316F928" Association="NPBankModel.FK__AcademicR__Perso__4316F928">
+            <End Role="Person" EntitySet="People" />
+            <End Role="AcademicRecord" EntitySet="AcademicRecords" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ListItem__ListIt__286302EC" Association="NPBankModel.FK__ListItem__ListIt__286302EC">
+            <End Role="ListItemCategory" EntitySet="ListItemCategories" />
+            <End Role="ListItem" EntitySet="ListItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Training__Person__46E78A0C" Association="NPBankModel.FK__Training__Person__46E78A0C">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Training" EntitySet="Trainings" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AcademicRecord">
+          <Key>
+            <PropertyRef Name="AcademicRecordId" />
+          </Key>
+          <Property Name="AcademicRecordId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonId" Type="Int32" Nullable="false" />
+          <Property Name="EducationLevelListItemId" Type="Int32" Nullable="false" />
+          <Property Name="InstituteName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="GPAObtained" Type="Double" />
+          <Property Name="CompletionYear" Type="DateTime" Precision="3" />
+          <Property Name="Major" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Board" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="InsertedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Person" Relationship="NPBankModel.FK__AcademicR__Perso__4316F928" FromRole="AcademicRecord" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="ListItem">
+          <Key>
+            <PropertyRef Name="ListItemId" />
+          </Key>
+          <Property Name="ListItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ListItemCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="ListItemName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ListItemDisplayName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ListItemCategory" Relationship="NPBankModel.FK__ListItem__ListIt__286302EC" FromRole="ListItem" ToRole="ListItemCategory" />
+        </EntityType>
+        <EntityType Name="ListItemCategory">
+          <Key>
+            <PropertyRef Name="ListItemCategoryId" />
+          </Key>
+          <Property Name="ListItemCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ListItems" Relationship="NPBankModel.FK__ListItem__ListIt__286302EC" FromRole="ListItemCategory" ToRole="ListItem" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="PersonId" />
+          </Key>
+          <Property Name="PersonId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+          <Property Name="GenderListItemId" Type="Int32" />
+          <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="MobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="InsertedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AcademicRecords" Relationship="NPBankModel.FK__AcademicR__Perso__4316F928" FromRole="Person" ToRole="AcademicRecord" />
+          <NavigationProperty Name="Trainings" Relationship="NPBankModel.FK__Training__Person__46E78A0C" FromRole="Person" ToRole="Training" />
+        </EntityType>
+        <EntityType Name="Training">
+          <Key>
+            <PropertyRef Name="TrainingId" />
+          </Key>
+          <Property Name="TrainingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PersonId" Type="Int32" Nullable="false" />
+          <Property Name="InstituteName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Course" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="InsertedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Person" Relationship="NPBankModel.FK__Training__Person__46E78A0C" FromRole="Training" ToRole="Person" />
+        </EntityType>
+        <Association Name="FK__AcademicR__Perso__4316F928">
+          <End Type="NPBankModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="NPBankModel.AcademicRecord" Role="AcademicRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="AcademicRecord">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ListItem__ListIt__286302EC">
+          <End Type="NPBankModel.ListItemCategory" Role="ListItemCategory" Multiplicity="1" />
+          <End Type="NPBankModel.ListItem" Role="ListItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ListItemCategory">
+              <PropertyRef Name="ListItemCategoryId" />
+            </Principal>
+            <Dependent Role="ListItem">
+              <PropertyRef Name="ListItemCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Training__Person__46E78A0C">
+          <End Type="NPBankModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="NPBankModel.Training" Role="Training" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="Training">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NPBankModelStoreContainer" CdmEntityContainer="NPBankEntities">
+          <EntitySetMapping Name="AcademicRecords">
+            <EntityTypeMapping TypeName="NPBankModel.AcademicRecord">
+              <MappingFragment StoreEntitySet="AcademicRecord">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Board" ColumnName="Board" />
+                <ScalarProperty Name="Major" ColumnName="Major" />
+                <ScalarProperty Name="CompletionYear" ColumnName="CompletionYear" />
+                <ScalarProperty Name="GPAObtained" ColumnName="GPAObtained" />
+                <ScalarProperty Name="InstituteName" ColumnName="InstituteName" />
+                <ScalarProperty Name="EducationLevelListItemId" ColumnName="EducationLevelListItemId" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="AcademicRecordId" ColumnName="AcademicRecordId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ListItems">
+            <EntityTypeMapping TypeName="NPBankModel.ListItem">
+              <MappingFragment StoreEntitySet="ListItem">
+                <ScalarProperty Name="ListItemDisplayName" ColumnName="ListItemDisplayName" />
+                <ScalarProperty Name="ListItemName" ColumnName="ListItemName" />
+                <ScalarProperty Name="ListItemCategoryId" ColumnName="ListItemCategoryId" />
+                <ScalarProperty Name="ListItemId" ColumnName="ListItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ListItemCategories">
+            <EntityTypeMapping TypeName="NPBankModel.ListItemCategory">
+              <MappingFragment StoreEntitySet="ListItemCategory">
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="ListItemCategoryId" ColumnName="ListItemCategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="People">
+            <EntityTypeMapping TypeName="NPBankModel.Person">
+              <MappingFragment StoreEntitySet="Person">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="GenderListItemId" ColumnName="GenderListItemId" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trainings">
+            <EntityTypeMapping TypeName="NPBankModel.Training">
+              <MappingFragment StoreEntitySet="Training">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="InsertedDate" ColumnName="InsertedDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="InstituteName" ColumnName="InstituteName" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="TrainingId" ColumnName="TrainingId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
